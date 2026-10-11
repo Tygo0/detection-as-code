@@ -1,0 +1,43 @@
+name: detections
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CHAINSAW_VERSION: v2.16.5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python deps
+        run: pip install pytest pyyaml
+
+      - name: Fetch pinned Chainsaw
+        run: |
+          set -euo pipefail
+          url="https://github.com/WithSecureLabs/chainsaw/releases/download/${CHAINSAW_VERSION}/chainsaw_x86_64-unknown-linux-gnu.tar.gz"
+          curl -sSL "$url" -o chainsaw.tar.gz
+          tar xzf chainsaw.tar.gz
+          echo "CHAINSAW=$(pwd)/chainsaw/chainsaw" >> "$GITHUB_ENV"
+
+      - name: Lint Sigma rules (valid YAML + required fields)
+        run: python tools/lint_rules.py
+
+      - name: Replay recordings and assert detections
+        run: pytest -v tests/
+
+      - name: Build ATT&CK coverage layer (verified rules only)
+        run: python tools/coverage.py --out coverage/navigator-layer.json
+
+      - name: Upload coverage layer
+        uses: actions/upload-artifact@v4
+        with:
+          name: navigator-layer
+          path: coverage/navigator-layer.json

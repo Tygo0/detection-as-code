@@ -1,0 +1,18 @@
+# Fetched binaries (pinned by version/commit, never committed)
+/chainsaw/chainsaw
+/chainsaw/chainsaw.exe
+Sysmon*.exe
+Sysmon.zip
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Local scratch
+*.tmp
+
+# Personal working docs (builder-facing, kept local, not part of the repo)
+/docs/mvp.md
+/docs/walkthrough.md

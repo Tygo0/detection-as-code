@@ -1,0 +1,35 @@
+<Configuration>
+  <!-- Networking stays ON so setup.ps1 can install Atomic Red Team.
+       record.ps1 disables the network before running any attack. -->
+  <Networking>Enable</Networking>
+
+  <ClipboardRedirection>Disable</ClipboardRedirection>
+  <AudioInput>Disable</AudioInput>
+  <VideoInput>Disable</VideoInput>
+  <PrinterRedirection>Disable</PrinterRedirection>
+  <vGPU>Disable</vGPU>
+  <MemoryInMB>8192</MemoryInMB>
+
+  <MappedFolders>
+    <MappedFolder>
+      <!-- Scripts + Sysmon config, read-only so the Sandbox can't alter them.
+           Edit this host path if your checkout lives elsewhere. -->
+      <HostFolder>C:\Users\pprox\Desktop\github_projects\detection-as-code\lab</HostFolder>
+      <SandboxFolder>C:\lab</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <!-- The ONLY writable path back to the host: exported .evtx land here. -->
+      <HostFolder>C:\dac-lab\out</HostFolder>
+      <SandboxFolder>C:\out</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+
+  <LogonCommand>
+    <!-- Runs ONCE when the Sandbox is created (not on later restarts).
+         Points at a .cmd wrapper, which is the most reliable launcher in Windows
+         Sandbox - a bare powershell command with nested quotes often fails to fire. -->
+    <Command>C:\lab\scripts\bootstrap.cmd</Command>
+  </LogonCommand>
+</Configuration>

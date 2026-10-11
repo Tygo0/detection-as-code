@@ -1,0 +1,12 @@
+# Links each recording to the rules that MUST or MUST NOT fire on it.
+# Tests read this file, not filenames, so the attack-log <-> rule relationship is explicit.
+# Rule names are the Sigma `title:` field (Chainsaw reports hits by title).
+
+- recording: recordings/attack/T1053.005/42f53695-ad4a-4546-abb6-7d837f644a71.evtx
+  description: Atomic Red Team "Scheduled task Local" - schtasks /Create
+  must_fire:
+    - Scheduled Task Creation via schtasks.exe
+
+- recording: recordings/benign/workstation-baseline.evtx
+  description: Normal activity (browsing, built-in apps) - no attack run
+  must_not_fire: "*"   # no rule may fire on benign telemetry

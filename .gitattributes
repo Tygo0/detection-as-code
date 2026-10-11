@@ -1,0 +1,6 @@
+# Recordings are binary - never apply text/EOL normalization (it would corrupt them)
+*.evtx binary
+
+# Keep Windows script line endings stable
+*.ps1 text eol=crlf
+*.cmd text eol=crlf

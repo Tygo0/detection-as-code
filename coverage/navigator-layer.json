@@ -1,0 +1,26 @@
+{
+  "name": "Verified detection coverage",
+  "versions": {
+    "layer": "4.5",
+    "navigator": "4.9.1",
+    "attack": "19"
+  },
+  "domain": "enterprise-attack",
+  "description": "Techniques with a rule proven to fire on recorded telemetry.",
+  "techniques": [
+    {
+      "techniqueID": "T1053.005",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#ffffff",
+      "#2e7d32"
+    ],
+    "minValue": 0,
+    "maxValue": 100
+  }
+}

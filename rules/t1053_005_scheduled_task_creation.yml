@@ -1,0 +1,29 @@
+title: Scheduled Task Creation via schtasks.exe
+id: 7f1a3d2e-9c4b-4a11-8f6e-0b2d5c9a1e01
+status: experimental
+description: |
+    Detects creation of a scheduled task with schtasks.exe. Attackers use this for
+    execution and persistence (ATT&CK T1053.005). Verified against Atomic Red Team
+    test "Scheduled task Local" (GUID 42f53695-ad4a-4546-abb6-7d837f644a71).
+references:
+    - https://attack.mitre.org/techniques/T1053/005/
+    - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1053.005/T1053.005.md
+author: Tygo0
+date: 2026-10-10
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\schtasks.exe'
+        CommandLine|contains: '/Create'
+    condition: selection
+falsepositives:
+    - Legitimate software installers and admin scripts that register scheduled tasks.
+      Measure this against the benign baseline; narrow with parent process or task
+      name if the benign rate is non-zero.
+level: medium
+tags:
+    - attack.persistence
+    - attack.execution
+    - attack.t1053.005
