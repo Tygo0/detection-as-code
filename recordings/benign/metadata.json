@@ -1,0 +1,13 @@
+{
+  "art_commit": "8af478b",
+  "sysmon_config_tag": "configs-082cba578667",
+  "windows_build": "10.0.26100",
+  "attack_version": "v19",
+  "system_language": "tr-TR",
+  "defender": "realtime+tamper disabled (Sandbox default)",
+  "kind": "benign-baseline",
+  "recorded_utc": "2026-10-11T07:30:50+00:00",
+  "networking": "on (no attack executed)",
+  "log_source": "Microsoft-Windows-Sysmon/Operational (EID 1 process_creation)",
+  "notes": "Normal activity (built-in apps, browsing, routine PowerShell). No attack run."
+}

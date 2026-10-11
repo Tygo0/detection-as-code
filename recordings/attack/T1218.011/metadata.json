@@ -1,0 +1,13 @@
+{
+  "art_commit": "8af478b",
+  "sysmon_config_tag": "configs-082cba578667",
+  "windows_build": "10.0.26100",
+  "attack_version": "v19",
+  "system_language": "tr-TR",
+  "defender": "realtime+tamper disabled (Sandbox default)",
+  "technique": "T1218.011",
+  "atomic_test_guid": "57ba4ce9-ee7a-4f27-9928-3c70c489b59d",
+  "recorded_utc": "2026-10-11T12:37:29+00:00",
+  "networking": "off during attack execution",
+  "log_source": "Microsoft-Windows-Sysmon/Operational (EID 1 process_creation)"
+}

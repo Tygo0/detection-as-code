@@ -2,13 +2,13 @@
 
 ```
 detection-as-code/                  repo root
-├── README.md                       what it is, results, how to reproduce, demo GIF
-├── LICENSE                         code license (MIT or Apache-2.0)
-├── .gitignore                      ignores the Chainsaw binary, scratch, local evtx exports
+├── README.md                       what it is, how to reproduce, status
+├── LICENSE                         MIT (code)
+├── .gitattributes                  marks *.evtx binary (no EOL normalization)
+├── .gitignore                      ignores fetched binaries, scratch, local-only docs
 │
-├── rules/                          THE DELIVERABLE — Sigma rules, one file per detection
-│   ├── LICENSE                     (optional) separate license for the rules
-│   ├── t1059_001_powershell_encoded_command.yml
+├── rules/                          THE DELIVERABLE — Sigma rules, one file per detection (flat)
+│   ├── t1059_001_encoded_powershell.yml
 │   ├── t1047_wmi_process_creation.yml
 │   ├── t1053_005_scheduled_task_creation.yml
 │   ├── t1547_001_registry_run_key.yml
@@ -16,53 +16,57 @@ detection-as-code/                  repo root
 │   ├── t1218_011_rundll32_proxy_execution.yml
 │   ├── t1218_005_mshta_proxy_execution.yml
 │   ├── t1685_005_clear_event_logs.yml
-│   ├── t1003_001_lsass_access.yml
-│   └── t1105_ingress_tool_transfer.yml
+│   ├── t1003_001_lsass_comsvcs_dump.yml
+│   └── t1105_certutil_download.yml
 │
-├── recordings/                     captured telemetry (small, trimmed .evtx)
+├── recordings/                     captured telemetry (small, trimmed Sysmon .evtx)
 │   ├── attack/
-│   │   └── T1053.005/
-│   │       ├── 42f53695-....evtx           sysmon / security / powershell logs
-│   │       └── metadata.json               full pinning info (see below)
+│   │   └── <Txxxx>/
+│   │       ├── <guid>.evtx          Sysmon Operational log, trimmed to the attack window
+│   │       └── metadata.json        pinned versions used for this recording
 │   └── benign/
 │       ├── workstation-baseline.evtx
-│       └── metadata.json
+│       ├── metadata.json
+│       └── README.md
 │
 ├── lab/                            everything that runs INSIDE Windows Sandbox
 │   ├── lab.wsb                     Sandbox config (net/clipboard off, folder maps)
-│   ├── scripts/
-│   │   ├── setup.ps1               Sysmon + logging + audit + ART install + metadata
-│   │   └── record.ps1              one technique: prereqs → net off → run → export → cleanup
-│   └── sysmon/
-│       └── sysmonconfig.xml        pinned sysmon-modular @ 082cba57 (binary NOT committed)
+│   └── scripts/
+│       ├── bootstrap.cmd           LogonCommand wrapper that launches setup.ps1
+│       ├── setup.ps1               exec policy + Sysmon + logging + audit + ART install
+│       └── record.ps1              one technique: prereqs → net off → run → export → cleanup
+│                                   (the Sysmon config and Sysmon binary are downloaded, not committed)
 │
-├── chainsaw/                       replay tool config
+├── chainsaw/                       replay tool config (binary fetched, not committed)
 │   ├── mapping.yml                 pinned Sigma→EVTX field mapping
-│   └── VERSION                     pinned Chainsaw release tag (binary fetched, not committed)
+│   └── VERSION                     pinned Chainsaw release tag
 │
 ├── tests/                          proves every rule works
-│   ├── expectations.yml            recording → rules that MUST / MUST NOT fire
+│   ├── expectations.yml            recording → rule titles that MUST / MUST NOT fire
 │   ├── run_chainsaw.py             wrapper: run Chainsaw, parse --json (not exit code)
 │   ├── conftest.py                 locates binary, loads expectations
 │   └── test_detections.py          pytest: assert fire-on-attack + silent-on-benign
 │
 ├── tools/
-│   └── coverage.py                 reads PASSING rules' `tags:` → ATT&CK layer + README table
+│   ├── lint_rules.py               Sigma YAML + required-field linter
+│   └── coverage.py                 reads PASSING rules' `tags:` → verified ATT&CK layer
 │
 ├── coverage/
 │   └── navigator-layer.json        generated ATT&CK Navigator layer (verified rules only)
 │
 ├── docs/
-│   ├── mvp.md                      (moved from HQ)
-│   ├── walkthrough.md              (moved from HQ)
+│   ├── recording.md                how to reproduce the recordings in Windows Sandbox
+│   ├── repo-layout.md              this file
 │   ├── adr/
-│   │   └── 0001-replay-tool.md     (the Chainsaw decision log)
-│   └── ads/                        Alerting & Detection Strategy, one per rule
-│       └── t1053_005.md
+│   │   └── 0001-replay-tool.md     the Chainsaw decision log
+│   └── ads/                        Alerting & Detection Strategy, one per rule (t*.md)
 │
 └── .github/workflows/
     └── ci.yml                      on push: sigma lint → fetch Chainsaw → pytest → build coverage
 ```
+
+> Not committed: `docs/mvp.md` and `docs/walkthrough.md` are local planning notes (gitignored);
+> the fetched Chainsaw and Sysmon binaries; and the Sysmon config (downloaded by `setup.ps1`).
 
 ## Key design choices (and the principles they encode)
 
@@ -75,12 +79,12 @@ rules whose tests pass**, so "claimed" coverage can never drift from "verified" 
 ```yaml
 - recording: recordings/attack/T1053.005/42f53695-....evtx
   must_fire:
-    - t1053_005_scheduled_task_creation
+    - Scheduled Task Creation via schtasks.exe   # the rule's Sigma `title:`
 - recording: recordings/benign/workstation-baseline.evtx
   must_not_fire: "*"          # no rule may fire on benign telemetry
 ```
-Tests read this, not filenames, so the link between an attack log and the rule it should trigger
-is explicit and reviewable.
+Rules are referenced by their Sigma `title:` (what Chainsaw reports), not by filename, so the
+link between an attack log and the rule it should trigger is explicit and reviewable.
 
 ### Every recording carries reproducibility metadata (`metadata.json`)
 ```json
@@ -99,10 +103,11 @@ is explicit and reviewable.
 }
 ```
 
-### Binaries are never committed
-The Chainsaw executable and `Sysmon64.exe` are platform binaries with their own licenses.
-`chainsaw/VERSION` and `lab/sysmon/sysmonconfig.xml` pin *what* to use; CI and the user fetch the
-actual binaries. This keeps the repo small, license-clean, and reproducible.
+### Binaries and the Sysmon config are never committed
+The Chainsaw executable, `Sysmon64.exe`, and the sysmon-modular config are fetched, not
+committed: `chainsaw/VERSION` pins the Chainsaw release, and `setup.ps1` pins the Sysmon
+config by its release tag (`configs-082cba578667`) and downloads it. CI fetches Chainsaw the
+same way. This keeps the repo small, license-clean, and reproducible.
 
 ### CI mirrors local exactly
 `ci.yml` runs the same `pytest` you run locally: lint Sigma → download pinned Chainsaw → replay
@@ -110,7 +115,6 @@ every recording via `run_chainsaw.py` → assert against `expectations.yml` → 
 Nothing in CI is special, so a green badge means a stranger can reproduce your results.
 
 ## Licensing note
-- Code (`scripts/`, `tools/`, `tests/`) → MIT or Apache-2.0 (`/LICENSE`).
-- Rules (`rules/`) → decide separately; if you ever adapt SigmaHQ rules you must honor their DRL.
-  Keeping a `rules/LICENSE` makes the boundary explicit even if you write all rules yourself.
-```
+- Code (`lab/`, `tools/`, `tests/`) → MIT (`/LICENSE`).
+- Rules (`rules/`) → authored here under the same license. If you ever adapt SigmaHQ rules you
+  must honor their DRL; add a separate `rules/LICENSE` if that boundary is ever needed.

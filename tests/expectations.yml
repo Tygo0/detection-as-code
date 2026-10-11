@@ -1,7 +1,8 @@
 # Links each recording to the rules that MUST or MUST NOT fire on it.
 # Tests read this file, not filenames, so the attack-log <-> rule relationship is explicit.
 # Rule names are the Sigma `title:` field (Chainsaw reports hits by title).
-# A recording whose .evtx is absent is SKIPPED (not failed) - e.g. ones pending re-record.
+# A recording whose .evtx is absent is SKIPPED (not failed), so new techniques can be
+# wired up before their recording exists.
 
 # ---- attack recordings ----
 - recording: recordings/attack/T1053.005/42f53695-ad4a-4546-abb6-7d837f644a71.evtx
@@ -36,7 +37,7 @@
   description: T1105 certutil download (urlcache)
   must_fire: [Ingress Tool Transfer via certutil urlcache]
 
-# ---- pending re-record with corrected test GUIDs (see docs/mvp.md 6b) ----
+# ---- WMI / encoded-PowerShell (test GUIDs: see docs/recording.md) ----
 - recording: recordings/attack/T1047/10447c83-fc38-462a-a936-5102363b1c43.evtx
   description: T1047 process creation via WMI (spawns cmd.exe)
   must_fire: [Process Creation via WMI]

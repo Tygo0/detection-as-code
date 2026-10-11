@@ -1,0 +1,14 @@
+{
+  "art_commit": "8af478b",
+  "sysmon_config_tag": "configs-082cba578667",
+  "windows_build": "10.0.26100",
+  "attack_version": "v19",
+  "system_language": "tr-TR",
+  "defender": "realtime+tamper disabled (Sandbox default)",
+  "technique": "T1003.001",
+  "atomic_test_guid": "2536dee2-12fb-459a-8c37-971844fa73be",
+  "recorded_utc": "2026-10-11T11:52:40+00:00",
+  "networking": "off during attack execution",
+  "log_source": "Microsoft-Windows-Sysmon/Operational (EID 1 process_creation)",
+  "notes": "LSASS dumped via rundll32 comsvcs.dll MiniDump."
+}
