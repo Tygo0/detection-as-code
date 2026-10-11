@@ -65,8 +65,7 @@ detection-as-code/                  repo root
     └── ci.yml                      on push: sigma lint → fetch Chainsaw → pytest → build coverage
 ```
 
-> Not committed: `docs/mvp.md` and `docs/walkthrough.md` are local planning notes (gitignored);
-> the fetched Chainsaw and Sysmon binaries; and the Sysmon config (downloaded by `setup.ps1`).
+> Not committed: the fetched Chainsaw and Sysmon binaries; and the Sysmon config (downloaded by `setup.ps1`).
 
 ## Key design choices (and the principles they encode)
 
