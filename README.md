@@ -1,5 +1,7 @@
 # Detection-as-Code
 
+[![detections](https://github.com/Tygo0/detection-as-code/actions/workflows/ci.yml/badge.svg)](https://github.com/Tygo0/detection-as-code/actions/workflows/ci.yml)
+
 Sigma detection rules where **every rule is proven to catch its attack and measured for
 false positives**, re-checked automatically on every push.
 
