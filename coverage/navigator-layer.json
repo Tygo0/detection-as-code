@@ -21,6 +21,12 @@
       "comment": "verified: rule fires on recording"
     },
     {
+      "techniqueID": "T1059.001",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    },
+    {
       "techniqueID": "T1105",
       "score": 100,
       "color": "#2e7d32",

@@ -8,19 +8,24 @@
 param(
     [Parameter(Mandatory)] [string]$TechniqueId,
     [Parameter(Mandatory)] [string]$TestGuid,
+    [hashtable]$InputArgs,              # optional: override Atomic input args, e.g. @{process_to_execute='cmd.exe'}
     [string]$Out = 'C:\out'
 )
 $ErrorActionPreference = 'Stop'
 
 Import-Module 'C:\AtomicRedTeam\invoke-atomicredteam\Invoke-AtomicRedTeam.psd1' -Force
 
+# Splatted onto every Invoke-AtomicTest call so -InputArgs is passed only when given.
+$ia = @{}
+if ($InputArgs) { $ia['InputArgs'] = $InputArgs }
+
 Write-Host "[*] $TechniqueId / $TestGuid" -ForegroundColor Cyan
 Write-Host "[*] Review what will run:" -ForegroundColor Yellow
-Invoke-AtomicTest $TechniqueId -TestGuids $TestGuid -ShowDetailsBrief
+Invoke-AtomicTest $TechniqueId -TestGuids $TestGuid -ShowDetailsBrief @ia
 
 # --- prerequisites while the network is still up ---
 Write-Host "[*] Fetching prerequisites (network on)..."
-Invoke-AtomicTest $TechniqueId -TestGuids $TestGuid -GetPrereqs
+Invoke-AtomicTest $TechniqueId -TestGuids $TestGuid -GetPrereqs @ia
 
 # --- network OFF before the attack runs ---
 Write-Host "[*] Disabling network..." -ForegroundColor Yellow
@@ -29,7 +34,7 @@ Get-NetAdapter | Disable-NetAdapter -Confirm:$false
 # --- run, timestamped so we export only the attack window ---
 $start = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
 Write-Host "[*] Running test at $start ..."
-Invoke-AtomicTest $TechniqueId -TestGuids $TestGuid
+Invoke-AtomicTest $TechniqueId -TestGuids $TestGuid @ia
 Start-Sleep -Seconds 6
 
 # --- export the three logs, filtered to events at/after $start ---
@@ -42,7 +47,7 @@ wevtutil epl 'Microsoft-Windows-PowerShell/Operational' "$base-powershell.evtx" 
 
 # --- cleanup (harmless if it errors, e.g. missing notepad) ---
 Write-Host "[*] Cleanup..."
-try { Invoke-AtomicTest $TechniqueId -TestGuids $TestGuid -Cleanup } catch { Write-Warning "cleanup: $_" }
+try { Invoke-AtomicTest $TechniqueId -TestGuids $TestGuid -Cleanup @ia } catch { Write-Warning "cleanup: $_" }
 
 # --- per-recording metadata ---
 @{

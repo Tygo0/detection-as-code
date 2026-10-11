@@ -37,8 +37,8 @@
   must_fire: [Ingress Tool Transfer via certutil urlcache]
 
 # ---- pending re-record with corrected test GUIDs (see docs/mvp.md 6b) ----
-- recording: recordings/attack/T1047/7db7a7f9-9531-4840-9b30-46220135441c.evtx
-  description: T1047 process creation via WMI (encoded command)
+- recording: recordings/attack/T1047/10447c83-fc38-462a-a936-5102363b1c43.evtx
+  description: T1047 process creation via WMI (spawns cmd.exe)
   must_fire: [Process Creation via WMI]
 
 - recording: recordings/attack/T1059.001/a538de64-1c74-46ed-aa60-b995ed302598.evtx

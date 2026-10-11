@@ -5,7 +5,8 @@ description: |
     Detects a script interpreter spawned by the WMI provider host (WmiPrvSE.exe),
     indicating process creation via WMI - a common execution/lateral-movement
     primitive (ATT&CK T1047). Verified against Atomic Red Team "Create a Process
-    using WMI Query and an Encoded Command" (GUID 7db7a7f9-9531-4840-9b30-46220135441c).
+    using obfuscated Win32_Process" (GUID 10447c83-fc38-462a-a936-5102363b1c43)
+    run with process_to_execute=cmd.exe, so WMI spawns a real child.
 references:
     - https://attack.mitre.org/techniques/T1047/
 author: Tygo0
