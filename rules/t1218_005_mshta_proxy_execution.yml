@@ -1,0 +1,28 @@
+title: Mshta Proxy Execution of Inline HTA
+id: 5e3f7b04-9d6a-4c25-a148-bf2d4e6c8c35
+status: experimental
+description: |
+    Detects mshta.exe executing an inline HTA (about:) to proxy execution of script
+    or spawn another interpreter (ATT&CK T1218.005). Verified against Atomic Red Team
+    "Mshta used to Execute PowerShell" (GUID 8707a805-2b76-4f32-b1c0-14e558205772).
+references:
+    - https://attack.mitre.org/techniques/T1218/005/
+author: Tygo0
+date: 2026-10-11
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\mshta.exe'
+        CommandLine|contains:
+            - 'about:'
+            - 'javascript'
+            - 'vbscript'
+    condition: selection
+falsepositives:
+    - Legacy line-of-business apps that still rely on HTA files.
+level: high
+tags:
+    - attack.defense-evasion
+    - attack.t1218.005

@@ -26,6 +26,12 @@ Start-Transcript -Path "$OUT\setup.log" -Force | Out-Null
 try {
     Write-Host "=== DAC Sandbox setup ===" -ForegroundColor Cyan
 
+    # --- 0. Allow local scripts to run (so record.ps1 works in any window).
+    #        MachinePolicy is Undefined in the Sandbox, so a machine-wide Bypass
+    #        sticks. Safe here: the Sandbox is disposable. ---
+    Write-Host "[*] Setting execution policy (Bypass, machine-wide)..."
+    Set-ExecutionPolicy Bypass -Scope LocalMachine -Force
+
     # --- 1. Sysmon (binary downloaded, never committed) ---
     Write-Host "[*] Downloading Sysmon..."
     $sysmonZip = "$env:TEMP\Sysmon.zip"
@@ -74,8 +80,9 @@ try {
     (Get-Date).ToUniversalTime().ToString('o') | Set-Content "$OUT\SETUP-COMPLETE.txt" -Encoding UTF8
 
     Write-Host ""
-    Write-Host "=== Ready. Now record a technique, e.g.: ===" -ForegroundColor Green
+    Write-Host "=== Ready. Open PowerShell and record a technique, e.g.: ===" -ForegroundColor Green
     Write-Host '  C:\lab\scripts\record.ps1 -TechniqueId T1053.005 -TestGuid 42f53695-ad4a-4546-abb6-7d837f644a71'
+    Write-Host '  (execution policy already set machine-wide; no need to set it per window)'
 }
 catch {
     Write-Host "SETUP FAILED: $_" -ForegroundColor Red

@@ -1,0 +1,34 @@
+title: Process Creation via WMI
+id: 9c73bf48-d3ae-4a69-e582-f36b8c0a2a79
+status: experimental
+description: |
+    Detects a script interpreter spawned by the WMI provider host (WmiPrvSE.exe),
+    indicating process creation via WMI - a common execution/lateral-movement
+    primitive (ATT&CK T1047). Verified against Atomic Red Team "Create a Process
+    using WMI Query and an Encoded Command" (GUID 7db7a7f9-9531-4840-9b30-46220135441c).
+references:
+    - https://attack.mitre.org/techniques/T1047/
+author: Tygo0
+date: 2026-10-11
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        ParentImage|endswith: '\WmiPrvSE.exe'
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+            - '\cmd.exe'
+            - '\wscript.exe'
+            - '\cscript.exe'
+            - '\mshta.exe'
+            - '\rundll32.exe'
+    condition: selection
+falsepositives:
+    - Some management software legitimately launches scripts via WMI. Narrow by
+      command line if the benign rate is non-zero.
+level: medium
+tags:
+    - attack.execution
+    - attack.t1047

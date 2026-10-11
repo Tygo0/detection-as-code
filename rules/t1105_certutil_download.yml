@@ -1,0 +1,25 @@
+title: Ingress Tool Transfer via certutil urlcache
+id: 8b62ae37-c29d-4f58-d471-e25a7b9f1f68
+status: experimental
+description: |
+    Detects use of certutil.exe to download a file via its urlcache option, a common
+    living-off-the-land ingress technique (ATT&CK T1105). Verified against Atomic Red
+    Team "certutil download (urlcache)" (GUID dd3b61dd-7bbc-48cd-ab51-49ad1a776df0).
+references:
+    - https://attack.mitre.org/techniques/T1105/
+author: Tygo0
+date: 2026-10-11
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\certutil.exe'
+        CommandLine|contains: 'urlcache'
+    condition: selection
+falsepositives:
+    - certutil has legitimate certificate uses, but -urlcache downloads are rarely benign.
+level: high
+tags:
+    - attack.command-and-control
+    - attack.t1105

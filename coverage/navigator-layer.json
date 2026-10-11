@@ -9,7 +9,49 @@
   "description": "Techniques with a rule proven to fire on recorded telemetry.",
   "techniques": [
     {
+      "techniqueID": "T1003.001",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    },
+    {
       "techniqueID": "T1053.005",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    },
+    {
+      "techniqueID": "T1105",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    },
+    {
+      "techniqueID": "T1136.001",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    },
+    {
+      "techniqueID": "T1218.005",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    },
+    {
+      "techniqueID": "T1218.011",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    },
+    {
+      "techniqueID": "T1547.001",
+      "score": 100,
+      "color": "#2e7d32",
+      "comment": "verified: rule fires on recording"
+    },
+    {
+      "techniqueID": "T1685.005",
       "score": 100,
       "color": "#2e7d32",
       "comment": "verified: rule fires on recording"

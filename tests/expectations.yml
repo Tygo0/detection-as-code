@@ -1,12 +1,51 @@
 # Links each recording to the rules that MUST or MUST NOT fire on it.
 # Tests read this file, not filenames, so the attack-log <-> rule relationship is explicit.
 # Rule names are the Sigma `title:` field (Chainsaw reports hits by title).
+# A recording whose .evtx is absent is SKIPPED (not failed) - e.g. ones pending re-record.
 
+# ---- attack recordings ----
 - recording: recordings/attack/T1053.005/42f53695-ad4a-4546-abb6-7d837f644a71.evtx
-  description: Atomic Red Team "Scheduled task Local" - schtasks /Create
-  must_fire:
-    - Scheduled Task Creation via schtasks.exe
+  description: T1053.005 scheduled task (schtasks /Create)
+  must_fire: [Scheduled Task Creation via schtasks.exe]
 
+- recording: recordings/attack/T1547.001/e55be3fd-3521-4610-9d1a-e210e42dcf05.evtx
+  description: T1547.001 registry Run key (reg add)
+  must_fire: [Registry Run Key Persistence via reg.exe]
+
+- recording: recordings/attack/T1136.001/bc8be0ac-475c-4fbf-9b1d-9fffd77afbde.evtx
+  description: T1136.001 local account (New-LocalUser)
+  must_fire: [Local Account Creation via New-LocalUser]
+
+- recording: recordings/attack/T1218.011/57ba4ce9-ee7a-4f27-9928-3c70c489b59d.evtx
+  description: T1218.011 rundll32 inline script
+  must_fire: [Rundll32 Proxy Execution of Script]
+
+- recording: recordings/attack/T1218.005/8707a805-2b76-4f32-b1c0-14e558205772.evtx
+  description: T1218.005 mshta inline HTA
+  must_fire: [Mshta Proxy Execution of Inline HTA]
+
+- recording: recordings/attack/T1685.005/e6abb60e-26b8-41da-8aae-0c35174b0967.evtx
+  description: T1685.005 clear event log (wevtutil cl)
+  must_fire: [Windows Event Log Cleared via wevtutil]
+
+- recording: recordings/attack/T1003.001/2536dee2-12fb-459a-8c37-971844fa73be.evtx
+  description: T1003.001 LSASS dump (comsvcs MiniDump)
+  must_fire: [LSASS Memory Dump via comsvcs.dll MiniDump]
+
+- recording: recordings/attack/T1105/dd3b61dd-7bbc-48cd-ab51-49ad1a776df0.evtx
+  description: T1105 certutil download (urlcache)
+  must_fire: [Ingress Tool Transfer via certutil urlcache]
+
+# ---- pending re-record with corrected test GUIDs (see docs/mvp.md 6b) ----
+- recording: recordings/attack/T1047/7db7a7f9-9531-4840-9b30-46220135441c.evtx
+  description: T1047 process creation via WMI (encoded command)
+  must_fire: [Process Creation via WMI]
+
+- recording: recordings/attack/T1059.001/a538de64-1c74-46ed-aa60-b995ed302598.evtx
+  description: T1059.001 encoded PowerShell command
+  must_fire: [Encoded PowerShell Command Execution]
+
+# ---- benign baseline ----
 - recording: recordings/benign/workstation-baseline.evtx
   description: Normal activity (browsing, built-in apps) - no attack run
-  must_not_fire: "*"   # no rule may fire on benign telemetry
+  must_not_fire: "*"

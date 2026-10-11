@@ -1,0 +1,27 @@
+title: Windows Event Log Cleared via wevtutil
+id: 6f408c15-a07b-4d36-b259-c03e5f7d9d46
+status: experimental
+description: |
+    Detects clearing of a Windows event log with wevtutil.exe, used to destroy
+    evidence (ATT&CK T1685.005, formerly T1070.001). Verified against Atomic Red
+    Team "Clear Logs" (GUID e6abb60e-26b8-41da-8aae-0c35174b0967).
+references:
+    - https://attack.mitre.org/techniques/T1685/005/
+author: Tygo0
+date: 2026-10-11
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\wevtutil.exe'
+        CommandLine|contains:
+            - ' cl '
+            - ' clear-log'
+    condition: selection
+falsepositives:
+    - Rare; administrators seldom clear logs via wevtutil on endpoints.
+level: high
+tags:
+    - attack.defense-evasion
+    - attack.t1685.005
