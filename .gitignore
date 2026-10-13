@@ -16,3 +16,6 @@ __pycache__/
 # Personal working docs (builder-facing, kept local, not part of the repo)
 /docs/mvp.md
 /docs/walkthrough.md
+
+# Local Sandbox config (contains a machine-specific path); use lab.wsb.example as the template
+/lab/lab.wsb

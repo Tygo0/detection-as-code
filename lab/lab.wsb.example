@@ -1,4 +1,7 @@
 <Configuration>
+  <!-- Copy this file to lab.wsb and set the first HostFolder to your clone's lab/ path.
+       lab.wsb is gitignored so your local path never gets committed. -->
+
   <!-- Networking stays ON so setup.ps1 can install Atomic Red Team.
        record.ps1 disables the network before running any attack. -->
   <Networking>Enable</Networking>
@@ -13,13 +16,14 @@
   <MappedFolders>
     <MappedFolder>
       <!-- Scripts + Sysmon config, read-only so the Sandbox can't alter them.
-           Edit this host path if your checkout lives elsewhere. -->
-      <HostFolder>C:\Users\pprox\Desktop\github_projects\detection-as-code\lab</HostFolder>
+           Set this to the lab/ directory of your checkout. -->
+      <HostFolder>C:\path\to\detection-as-code\lab</HostFolder>
       <SandboxFolder>C:\lab</SandboxFolder>
       <ReadOnly>true</ReadOnly>
     </MappedFolder>
     <MappedFolder>
-      <!-- The ONLY writable path back to the host: exported .evtx land here. -->
+      <!-- The ONLY writable path back to the host: exported .evtx land here.
+           Create this folder first (or change it to any empty folder you prefer). -->
       <HostFolder>C:\dac-lab\out</HostFolder>
       <SandboxFolder>C:\out</SandboxFolder>
       <ReadOnly>false</ReadOnly>

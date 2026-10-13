@@ -30,7 +30,7 @@ detection-as-code/                  repo root
 │       └── README.md
 │
 ├── lab/                            everything that runs INSIDE Windows Sandbox
-│   ├── lab.wsb                     Sandbox config (net/clipboard off, folder maps)
+│   ├── lab.wsb.example             Sandbox config template (copy to lab.wsb, set your path)
 │   └── scripts/
 │       ├── bootstrap.cmd           LogonCommand wrapper that launches setup.ps1
 │       ├── setup.ps1               exec policy + Sysmon + logging + audit + ART install
@@ -65,7 +65,8 @@ detection-as-code/                  repo root
     └── ci.yml                      on push: sigma lint → fetch Chainsaw → pytest → build coverage
 ```
 
-> Not committed: the fetched Chainsaw and Sysmon binaries; and the Sysmon config (downloaded by `setup.ps1`).
+> Not committed: `lab/lab.wsb` (copy it from `lab.wsb.example` and set your local path); the
+> fetched Chainsaw and Sysmon binaries; and the Sysmon config (downloaded by `setup.ps1`).
 
 ## Key design choices (and the principles they encode)
 

@@ -9,13 +9,14 @@ only inside a disposable **Windows Sandbox**.
   (Windows Features -> "Windows Sandbox").
 - A clone of this repo.
 - An output folder on the host for exported logs: create `C:\dac-lab\out`.
-- In `lab/lab.wsb`, set the first mapped `HostFolder` to the `lab/` directory of your clone.
-  (The second mapping, `C:\dac-lab\out`, is the only writable path back to the host.)
+- Copy `lab/lab.wsb.example` to `lab/lab.wsb` and set the first mapped `HostFolder` to the
+  `lab/` directory of your clone. (`lab.wsb` is gitignored so your local path is never
+  committed. The second mapping, `C:\dac-lab\out`, is the only writable path back to the host.)
 
 ## One run = one technique
 Each recording is made in a fresh Sandbox so it is free of leftovers and reproducible.
 
-1. Double-click `lab/lab.wsb`. The `LogonCommand` runs `setup.ps1` headless; watch the host
+1. Double-click your `lab/lab.wsb`. The `LogonCommand` runs `setup.ps1` headless; watch the host
    folder `C:\dac-lab\out\` for `SETUP-COMPLETE.txt` (and `setup.log` for live progress).
    `setup.ps1` installs Sysmon (pinned sysmon-modular config), enables PowerShell script-block
    logging and account auditing, sets the execution policy, and installs Atomic Red Team.
